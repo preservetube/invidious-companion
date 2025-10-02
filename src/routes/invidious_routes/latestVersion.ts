@@ -57,7 +57,12 @@ latestVersion.get("/", async (c) => {
     );
     const selectedItagFormat = availableFormats?.filter((i) =>
         i.itag == Number(itag)
-    );
+    ).filter(f => {
+      if (f.is_auto_dubbed) return false 
+      if (f.audio_track && !f.audio_track.display_name.endsWith('original')) return false
+      return true
+    });
+    
     if (selectedItagFormat?.length === 0) {
         throw new HTTPException(400, {
             res: new Response("No itag found."),
